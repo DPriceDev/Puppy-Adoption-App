@@ -11,46 +11,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.Coil
 import com.example.androiddevchallenge.R
 import coil.transform.CircleCropTransformation
-import com.example.androiddevchallenge.MyApp
+import com.example.androiddevchallenge.model.Puppy
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.viewmodel.PuppyListViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
-
-data class Puppy(val name: String,
-                 val breed: String,
-                 val imageUrl: String)
 
 object PuppyListUi {
 
     @Composable
-    fun PuppyListLayout() {
-        // todo: viewmodel, hilt?
-
-        val items = listOf(
-            Puppy(
-                "Henry",
-                "Sausage",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            ),
-            Puppy(
-                "Tom",
-                "Hund",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            )
-        )
+    fun PuppyListLayout(puppyListViewModel: PuppyListViewModel,
+                        goToDetail: () -> Unit) {
+        val puppies = puppyListViewModel.puppies
 
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            PuppyList(puppies = items)
+            PuppyList(puppies = puppies, onItemClicked = goToDetail)
         }
-
     }
 
     @Composable
-    fun PuppyList(puppies: List<Puppy>) {
+    fun PuppyList(puppies: List<Puppy>,
+                  onItemClicked: () -> Unit) {
         val scrollState = rememberLazyListState()
         LazyColumn(
             state = scrollState,
@@ -59,19 +43,20 @@ object PuppyListUi {
                 .padding(vertical = 8.dp)
         ) {
             items(puppies) { puppy ->
-                PuppyRow(puppy)
+                PuppyRow(puppy, onItemClicked)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 
     @Composable
-    fun PuppyRow(puppy: Puppy) {
-        Card(
+    fun PuppyRow(puppy: Puppy, onClick: () -> Unit) {
+        Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            elevation = 8.dp
+            onClick = onClick,
+            //elevation = ButtonElevation(8.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -120,6 +105,6 @@ private fun PuppyRowPreview() {
     )
 
     MyTheme {
-        PuppyListUi.PuppyRow(testPuppy)
+        PuppyListUi.PuppyRow(testPuppy) { }
     }
 }
