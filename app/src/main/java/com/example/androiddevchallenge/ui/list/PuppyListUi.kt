@@ -11,18 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.androiddevchallenge.R
 import coil.transform.CircleCropTransformation
 import com.example.androiddevchallenge.model.Puppy
 import com.example.androiddevchallenge.ui.theme.MyTheme
-import com.example.androiddevchallenge.viewmodel.PuppyListViewModel
+import com.example.androiddevchallenge.viewmodel.list.PuppyListViewModel
+import com.example.androiddevchallenge.viewmodel.list.PuppyListViewModelImpl
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 object PuppyListUi {
 
     @Composable
-    fun PuppyListLayout(puppyListViewModel: PuppyListViewModel,
-                        goToDetail: () -> Unit) {
+    fun PuppyListLayout(puppyListViewModel: PuppyListViewModel, goToDetail: (Puppy) -> Unit) {
         val puppies = puppyListViewModel.puppies
 
         Surface(
@@ -33,8 +34,7 @@ object PuppyListUi {
     }
 
     @Composable
-    fun PuppyList(puppies: List<Puppy>,
-                  onItemClicked: () -> Unit) {
+    fun PuppyList(puppies: List<Puppy>, onItemClicked: (Puppy) -> Unit) {
         val scrollState = rememberLazyListState()
         LazyColumn(
             state = scrollState,
@@ -50,12 +50,12 @@ object PuppyListUi {
     }
 
     @Composable
-    fun PuppyRow(puppy: Puppy, onClick: () -> Unit) {
+    fun PuppyRow(puppy: Puppy, onClick: (Puppy) -> Unit) {
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            onClick = onClick,
+            onClick = { onClick(puppy) },
             //elevation = ButtonElevation(8.dp)
         ) {
             Row(

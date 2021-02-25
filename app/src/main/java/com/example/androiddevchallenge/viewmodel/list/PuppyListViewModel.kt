@@ -1,4 +1,4 @@
-package com.example.androiddevchallenge.viewmodel
+package com.example.androiddevchallenge.viewmodel.list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,17 +17,6 @@ class PuppyListViewModelImpl @Inject constructor(private val getPuppiesUseCase: 
     : ViewModel(), PuppyListViewModel {
 
     override val puppies: List<Puppy> by mutableStateOf(
-        listOf(
-            Puppy(
-                "Henry",
-                "Sausage",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            ),
-            Puppy(
-                "Tom",
-                "Hund",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            )
-        )
+        getPuppiesUseCase.getPuppies()
     )
 }

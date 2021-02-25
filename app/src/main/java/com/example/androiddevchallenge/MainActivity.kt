@@ -17,22 +17,22 @@ package com.example.androiddevchallenge
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
+import com.example.androiddevchallenge.model.AppGraph
+import com.example.androiddevchallenge.model.Puppy
 import com.example.androiddevchallenge.ui.detail.PuppyDetailUi
 import com.example.androiddevchallenge.ui.list.PuppyListUi
 import com.example.androiddevchallenge.ui.theme.MyTheme
-import com.example.androiddevchallenge.viewmodel.PuppyListViewModel
-import com.example.androiddevchallenge.viewmodel.PuppyListViewModelImpl
+import com.example.androiddevchallenge.viewmodel.detail.PuppyDetailViewModel
+import com.example.androiddevchallenge.viewmodel.detail.PuppyDetailViewModelImpl
+import com.example.androiddevchallenge.viewmodel.list.PuppyListViewModel
+import com.example.androiddevchallenge.viewmodel.list.PuppyListViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,29 +40,35 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val puppyListViewModel: PuppyListViewModel by viewModels<PuppyListViewModelImpl>()
-
         setContent {
             MyTheme {
-                MyApp(puppyListViewModel)
+                MyApp()
             }
         }
     }
 }
 
-// Start building your app here!
 @Composable
-fun MyApp(puppyListViewModel: PuppyListViewModel) {
+fun MyApp(puppyListViewModel: PuppyListViewModel = viewModel<PuppyListViewModelImpl>(),
+          puppyDetailViewModel: PuppyDetailViewModel = viewModel<PuppyDetailViewModelImpl>()) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "puppy_list") {
-        composable("puppy_list") {
-            PuppyListUi.PuppyListLayout(puppyListViewModel) {
-                navController.navigate("puppy_detail")
+    NavHost(
+        navController = navController,
+        startDestination = AppGraph.PuppyList.route
+    ) {
+        composable(
+            route = AppGraph.PuppyList.route
+        ) {
+            PuppyListUi.PuppyListLayout(puppyListViewModel) { puppy ->
+                puppyDetailViewModel.setupWithPuppy(puppy)
+                navController.navigate(AppGraph.PuppyDetails.route)
             }
         }
-        composable("puppy_detail") {
-            PuppyDetailUi.Layout()
+        composable(
+            route = AppGraph.PuppyDetails.route
+        ) {
+            PuppyDetailUi.Layout(puppyDetailViewModel)
         }
     }
 }
@@ -70,17 +76,15 @@ fun MyApp(puppyListViewModel: PuppyListViewModel) {
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun LightPreview() {
-//    val testViewModel = PuppyListViewModelImpl()
-//    MyTheme {
-//        MyApp(testViewModel)
-//    }
+    MyTheme {
+        MyApp()
+    }
 }
 
 @Preview("Dark Theme", widthDp = 360, heightDp = 640)
 @Composable
 fun DarkPreview() {
-//    val testViewModel = PuppyListViewModelImpl()
-//    MyTheme(darkTheme = true) {
-//        MyApp(testViewModel)
-//    }
+    MyTheme(darkTheme = true) {
+        MyApp()
+    }
 }
