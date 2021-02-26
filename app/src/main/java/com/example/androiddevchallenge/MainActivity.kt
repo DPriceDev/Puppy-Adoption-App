@@ -18,14 +18,17 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SquareFoot
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityOptionsCompat
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.androiddevchallenge.model.AppGraph
 import com.example.androiddevchallenge.ui.detail.PuppyDetailUi
@@ -54,21 +57,35 @@ class MainActivity : AppCompatActivity() {
 fun MyApp(puppyDetailViewModel: PuppyDetailViewModel = viewModel<PuppyDetailViewModelImpl>()) {
     val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = AppGraph.PuppyList.route
-    ) {
-        composable(route = AppGraph.PuppyList.route) { backStackEntry ->
-            val puppyListViewModel: PuppyListViewModel = viewModel<PuppyListViewModelImpl>(
-                factory = HiltViewModelFactory(LocalContext.current, backStackEntry)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Puppy Adoption") },
+                actions = {
+                    Icon(
+                        imageVector = Icons.Default.SquareFoot,
+                        contentDescription = "Switch to grid view"
+                    )
+                }
             )
-            PuppyListUi.PuppyListLayout(puppyListViewModel) { puppy ->
-                puppyDetailViewModel.setupWithPuppy(puppy)
-                navController.navigate(AppGraph.PuppyDetails.route)
-            }
         }
-        composable(route = AppGraph.PuppyDetails.route,) {
-            PuppyDetailUi.Layout(puppyDetailViewModel)
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = AppGraph.PuppyList.route
+        ) {
+            composable(route = AppGraph.PuppyList.route) { backStackEntry ->
+                val puppyListViewModel: PuppyListViewModel = viewModel<PuppyListViewModelImpl>(
+                    factory = HiltViewModelFactory(LocalContext.current, backStackEntry)
+                )
+                PuppyListUi.Layout(puppyListViewModel) { puppy ->
+                    puppyDetailViewModel.setupWithPuppy(puppy)
+                    navController.navigate(AppGraph.PuppyDetails.route)
+                }
+            }
+            composable(route = AppGraph.PuppyDetails.route,) {
+                PuppyDetailUi.Layout(puppyDetailViewModel)
+            }
         }
     }
 }

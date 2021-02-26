@@ -9,18 +9,25 @@ interface PuppyRepository {
 
 class PuppyRepositoryImpl @Inject constructor() : PuppyRepository {
 
+    @ExperimentalStdlibApi
     override fun getPuppies() : List<Puppy> {
-        return listOf(
-            Puppy(
-                "Henry",
-                "Sausage",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            ),
-            Puppy(
-                "Tom",
-                "Hund",
-                "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
-            )
-        )
+        return buildList {
+            repeat(5) {
+                add(
+                    Puppy(
+                        "Henry",
+                        "Sausage",
+                        "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
+                    )
+                )
+                add(
+                    Puppy(
+                        "Tom",
+                        "Hund",
+                        "https://dogtime.com/assets/uploads/2011/03/puppy-development-1280x720.jpg"
+                    )
+                )
+            }
+        }
     }
 }
