@@ -20,12 +20,14 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityOptionsCompat
+import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.androiddevchallenge.model.AppGraph
-import com.example.androiddevchallenge.model.Puppy
 import com.example.androiddevchallenge.ui.detail.PuppyDetailUi
 import com.example.androiddevchallenge.ui.list.PuppyListUi
 import com.example.androiddevchallenge.ui.theme.MyTheme
@@ -49,25 +51,23 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun MyApp(puppyListViewModel: PuppyListViewModel = viewModel<PuppyListViewModelImpl>(),
-          puppyDetailViewModel: PuppyDetailViewModel = viewModel<PuppyDetailViewModelImpl>()) {
+fun MyApp(puppyDetailViewModel: PuppyDetailViewModel = viewModel<PuppyDetailViewModelImpl>()) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = AppGraph.PuppyList.route
     ) {
-        composable(
-            route = AppGraph.PuppyList.route
-        ) {
+        composable(route = AppGraph.PuppyList.route) { backStackEntry ->
+            val puppyListViewModel: PuppyListViewModel = viewModel<PuppyListViewModelImpl>(
+                factory = HiltViewModelFactory(LocalContext.current, backStackEntry)
+            )
             PuppyListUi.PuppyListLayout(puppyListViewModel) { puppy ->
                 puppyDetailViewModel.setupWithPuppy(puppy)
                 navController.navigate(AppGraph.PuppyDetails.route)
             }
         }
-        composable(
-            route = AppGraph.PuppyDetails.route
-        ) {
+        composable(route = AppGraph.PuppyDetails.route,) {
             PuppyDetailUi.Layout(puppyDetailViewModel)
         }
     }

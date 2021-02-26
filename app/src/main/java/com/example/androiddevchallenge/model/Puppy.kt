@@ -3,4 +3,9 @@ package com.example.androiddevchallenge.model
 
 data class Puppy(val name: String,
                  val breed: String,
-                 val imageUrl: String)
+                 val imageUrl: String) {
+
+    companion object {
+        val Default = Puppy("", "", "")
+    }
+}

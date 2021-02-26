@@ -2,6 +2,8 @@ package com.example.androiddevchallenge.di
 
 import com.example.androiddevchallenge.repository.PuppyRepository
 import com.example.androiddevchallenge.repository.PuppyRepositoryImpl
+import com.example.androiddevchallenge.usecase.AdoptPuppyUseCase
+import com.example.androiddevchallenge.usecase.AdoptPuppyUseCaseImpl
 import com.example.androiddevchallenge.usecase.GetPuppiesUseCase
 import com.example.androiddevchallenge.usecase.GetPuppiesUseCaseImpl
 import dagger.Binds
@@ -15,6 +17,9 @@ abstract class PuppyModule {
 
     @Binds
     abstract fun GetPuppiesUseCaseImpl.bindGetPuppiesUseCase() : GetPuppiesUseCase
+
+    @Binds
+    abstract fun AdoptPuppyUseCaseImpl.bindAdoptPuppyUseCase() : AdoptPuppyUseCase
 
     @Binds
     abstract fun PuppyRepositoryImpl.bindPuppyRepository() : PuppyRepository

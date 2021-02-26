@@ -23,7 +23,8 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 object PuppyListUi {
 
     @Composable
-    fun PuppyListLayout(puppyListViewModel: PuppyListViewModel, goToDetail: (Puppy) -> Unit) {
+    fun PuppyListLayout(puppyListViewModel: PuppyListViewModel,
+                        goToDetail: (Puppy) -> Unit) {
         val puppies = puppyListViewModel.puppies
 
         Surface(
